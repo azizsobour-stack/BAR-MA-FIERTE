@@ -1,0 +1,6 @@
+{
+  "name": "Bar La Fierté - Restaurant Lomé",
+  "description": "Menu interactif, commande et réservation sur WhatsApp pour le Bar La Fierté à Agoè, Lomé (Togo).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
