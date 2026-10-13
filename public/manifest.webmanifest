@@ -1,0 +1,63 @@
+{
+  "id": "/",
+  "name": "Bar La Fierté — Lomé",
+  "short_name": "La Fierté",
+  "description": "Menu interactif, commande et réservation sur WhatsApp pour le Bar La Fierté à Agoè, Lomé (Togo).",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#faf6f0",
+  "theme_color": "#c2410c",
+  "lang": "fr-TG",
+  "categories": ["food", "restaurant", "shopping"],
+  "icons": [
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Consulter la carte",
+      "short_name": "Menu",
+      "description": "Voir tous les plats et boissons du restaurant",
+      "url": "/#menu",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Commander",
+      "short_name": "Commande",
+      "description": "Passer une commande sur place, à emporter ou livraison",
+      "url": "/#cart",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Réserver une table",
+      "short_name": "Réserver",
+      "description": "Réserver une table sur WhatsApp",
+      "url": "/#booking",
+      "icons": [{ "src": "/pwa-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

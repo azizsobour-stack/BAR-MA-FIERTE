@@ -10,6 +10,17 @@
   <meta property="og:type" content="restaurant.menu" />
   <meta name="theme-color" content="#c2410c" />
 
+  <!-- Progressive Web App (PWA) & Mobile Web App Meta -->
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="La Fierté" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/pwa-192x192.png" />
+  <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+  <link rel="shortcut icon" href="/favicon.ico" />
+
   <!-- Polices Google Fonts avec fallback système -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -1748,9 +1759,100 @@
       white-space: nowrap;
       border: 0;
     }
+
+    /* BANDEAU INSTALLATION PWA */
+    .pwa-install-bar {
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 24px);
+      max-width: 520px;
+      background: var(--surface);
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-float);
+      padding: 10px 14px;
+      z-index: 85;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      animation: pwaSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .pwa-install-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .pwa-install-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .pwa-install-text {
+      min-width: 0;
+    }
+
+    .pwa-install-title {
+      font-weight: 800;
+      font-size: 0.88rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pwa-install-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pwa-install-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-pwa-close {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      border-radius: 50%;
+      font-size: 0.9rem;
+      transition: background var(--trans-fast);
+    }
+
+    .btn-pwa-close:hover {
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    @keyframes pwaSlideUp {
+      from { transform: translateX(-50%) translateY(120%); opacity: 0; }
+      to { transform: translateX(-50%) translateY(0); opacity: 1; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- BANDEAU HORS-LIGNE PWA -->
+  <div id="pwa-offline-banner" style="display: none; background: #7c2d12; color: #fff; padding: 6px 16px; font-size: 0.82rem; text-align: center; font-weight: 600; z-index: 100;">
+    ⚡ Mode hors-ligne — La carte et vos sélections restent disponibles sans connexion internet.
+  </div>
 
   <!-- TOAST DE NOTIFICATION FLOTTANT -->
   <div id="toast" class="toast-notification" role="status" aria-live="polite">
@@ -1790,6 +1892,11 @@
         </div>
 
         <div class="top-actions">
+          <button type="button" id="btn-pwa-install-header" class="btn-action-tool" style="display: none;" title="Installer l'application sur votre écran d'accueil">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Installer l'app</span>
+          </button>
+
           <button type="button" id="btn-toggle-admin-mode" class="btn-action-tool" title="Modifier la carte et les photos">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
             <span id="admin-toggle-label">Gérer la carte</span>
@@ -2385,6 +2492,57 @@
     </div>
   </div>
 
+  <!-- MODALE 8 : INSTRUCTIONS INSTALLATION IPHONE / IPAD (IOS SAFARI) -->
+  <div id="modal-ios-install" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modal-ios-title">
+    <div class="modal-sheet" style="max-width: 440px;">
+      <div class="modal-header">
+        <div class="modal-title" id="modal-ios-title">📲 Installer sur iPhone / iPad</div>
+        <button type="button" class="close-modal-btn" data-close-modal="modal-ios-install" aria-label="Fermer">✕</button>
+      </div>
+      <div class="modal-content" style="text-align: center; padding: 24px 20px;">
+        <img src="/pwa-192x192.png" alt="Bar La Fierté" style="width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 16px; box-shadow: var(--shadow-md);" />
+        <h3 style="font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 8px;">Ajouter à l'écran d'accueil</h3>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+          Installez Bar La Fierté comme une vraie application sur votre iPhone :
+        </p>
+        <div style="text-align: left; background: var(--surface-soft); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; margin-bottom: 20px; font-size: 0.9rem; display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0;">1</span>
+            <span>Touchez le bouton <strong>Partager</strong> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; display: inline-block;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="12" x2="12" y2="15"/></svg> en bas de Safari.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0;">2</span>
+            <span>Faites défiler vers le bas et touchez <strong>« Sur l'écran d'accueil »</strong> ➕.</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="background: var(--primary); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; flex-shrink: 0;">3</span>
+            <span>Touchez <strong>« Ajouter »</strong> en haut à droite.</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-primary" style="width: 100%;" data-close-modal="modal-ios-install">
+          J'ai compris
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BANDEAU D'INSTALLATION PWA FLOTTANT (SMARTPHONE & PC) -->
+  <div id="pwa-install-banner" class="pwa-install-bar" style="display: none;">
+    <div class="pwa-install-content">
+      <img src="/pwa-192x192.png" alt="Bar La Fierté" class="pwa-install-icon" />
+      <div class="pwa-install-text">
+        <div class="pwa-install-title">Installer l'application Bar La Fierté</div>
+        <div class="pwa-install-subtitle">Accès rapide sur l'écran d'accueil & hors-ligne</div>
+      </div>
+    </div>
+    <div class="pwa-install-actions">
+      <button type="button" class="btn btn-primary btn-sm" id="btn-pwa-install-banner">
+        <span>Installer</span>
+      </button>
+      <button type="button" class="btn-pwa-close" id="btn-pwa-dismiss-banner" aria-label="Fermer">✕</button>
+    </div>
+  </div>
+
   <!-- SECTION INFOS PRATIQUES & CONTACT -->
   <section class="info-section" id="infos">
     <div class="container">
@@ -2452,6 +2610,11 @@
       <p style="font-size: 0.82rem; color: var(--text-light);">
         Commander et réserver facilement depuis votre smartphone à Lomé.
       </p>
+      <div style="margin-top: 12px; margin-bottom: 8px;">
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-pwa-install-footer" style="display: none; margin: 0 auto;">
+          📲 Installer l'application sur ce téléphone
+        </button>
+      </div>
       <div class="demo-credit">
         Démo réalisée par [MON NOM]
       </div>
@@ -3899,9 +4062,140 @@
     }
 
     /* ==========================================================================
+       13.5. PROGRESSIVE WEB APP (PWA) : SERVICE WORKER, HORS-LIGNE & INSTALLATION
+       ========================================================================== */
+    let deferredPwaPrompt = null;
+    let isPwaInstalled = false;
+    const isIOSDevice = /iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase());
+
+    function checkStandaloneMode() {
+      return window.matchMedia('(display-mode: standalone)').matches ||
+             ('standalone' in window.navigator && window.navigator.standalone === true);
+    }
+
+    function initPWAFeatures() {
+      // 1. Enregistrement du Service Worker
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').then((reg) => {
+            console.log('[PWA] Service Worker actif :', reg.scope);
+          }).catch((err) => {
+            console.warn('[PWA] Service Worker non disponible :', err);
+          });
+        });
+      }
+
+      // 2. Détection si l'application est déjà installée
+      isPwaInstalled = checkStandaloneMode();
+      if (isPwaInstalled) {
+        document.querySelectorAll('#btn-pwa-install-header, #btn-pwa-install-footer, #pwa-install-banner').forEach(el => {
+          if (el) el.style.display = 'none';
+        });
+        return;
+      }
+
+      // 3. Gestion de l'état réseau (En ligne / Hors-ligne)
+      function updateOnlineStatus() {
+        const banner = document.getElementById('pwa-offline-banner');
+        if (!banner) return;
+        if (!navigator.onLine) {
+          banner.style.display = 'block';
+          showToast("Mode hors-ligne actif (la carte reste consultable)", "⚡");
+        } else {
+          if (banner.style.display === 'block') {
+            banner.style.display = 'none';
+            showToast("Connexion rétablie !", "🌐");
+          }
+        }
+      }
+      window.addEventListener('online', updateOnlineStatus);
+      window.addEventListener('offline', updateOnlineStatus);
+      updateOnlineStatus();
+
+      // 4. Déclencheur d'installation
+      async function triggerPwaInstall() {
+        if (isIOSDevice) {
+          openModal('modal-ios-install');
+          return;
+        }
+
+        if (deferredPwaPrompt) {
+          deferredPwaPrompt.prompt();
+          const choice = await deferredPwaPrompt.userChoice;
+          if (choice.outcome === 'accepted') {
+            document.querySelectorAll('#btn-pwa-install-header, #btn-pwa-install-footer, #pwa-install-banner').forEach(el => {
+              if (el) el.style.display = 'none';
+            });
+            showToast("Installation en cours...", "📲");
+          }
+          deferredPwaPrompt = null;
+        } else {
+          if (isIOSDevice) {
+            openModal('modal-ios-install');
+          } else {
+            showToast("Pour installer : Menu du navigateur ⋮ puis 'Ajouter à l'écran d'accueil'", "ℹ️");
+          }
+        }
+      }
+
+      // Écouteurs sur les boutons d'installation
+      document.getElementById('btn-pwa-install-header')?.addEventListener('click', triggerPwaInstall);
+      document.getElementById('btn-pwa-install-footer')?.addEventListener('click', triggerPwaInstall);
+      document.getElementById('btn-pwa-install-banner')?.addEventListener('click', triggerPwaInstall);
+
+      document.getElementById('btn-pwa-dismiss-banner')?.addEventListener('click', () => {
+        const banner = document.getElementById('pwa-install-banner');
+        if (banner) banner.style.display = 'none';
+        sessionStorage.setItem('pwa_banner_dismissed', '1');
+      });
+
+      // Capture de l'événement natif d'installation (Android / Chrome / Edge / Desktop)
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPwaPrompt = e;
+
+        const btnHeader = document.getElementById('btn-pwa-install-header');
+        const btnFooter = document.getElementById('btn-pwa-install-footer');
+        const banner = document.getElementById('pwa-install-banner');
+
+        if (btnHeader) btnHeader.style.display = 'inline-flex';
+        if (btnFooter) btnFooter.style.display = 'inline-flex';
+
+        if (!sessionStorage.getItem('pwa_banner_dismissed') && banner) {
+          banner.style.display = 'flex';
+        }
+      });
+
+      // Sur iOS Safari (qui ne déclenche pas beforeinstallprompt), afficher les boutons avec guide
+      if (isIOSDevice && !isPwaInstalled) {
+        const btnHeader = document.getElementById('btn-pwa-install-header');
+        const btnFooter = document.getElementById('btn-pwa-install-footer');
+        const banner = document.getElementById('pwa-install-banner');
+
+        if (btnHeader) btnHeader.style.display = 'inline-flex';
+        if (btnFooter) btnFooter.style.display = 'inline-flex';
+
+        if (!sessionStorage.getItem('pwa_banner_dismissed') && banner) {
+          banner.style.display = 'flex';
+        }
+      }
+
+      // Confirmation une fois l'application installée
+      window.addEventListener('appinstalled', () => {
+        isPwaInstalled = true;
+        deferredPwaPrompt = null;
+        document.querySelectorAll('#btn-pwa-install-header, #btn-pwa-install-footer, #pwa-install-banner').forEach(el => {
+          if (el) el.style.display = 'none';
+        });
+        showToast("Application Bar La Fierté installée !", "📲");
+      });
+    }
+
+    /* ==========================================================================
        14. ÉCOUTEURS D'ÉVÉNEMENTS & INITIALISATION
        ========================================================================== */
     document.addEventListener("DOMContentLoaded", () => {
+      initPWAFeatures();
       checkRestaurantStatus();
       setInterval(checkRestaurantStatus, 60000);
 
